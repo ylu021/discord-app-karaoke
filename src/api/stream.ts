@@ -1,16 +1,11 @@
-import ytdl, { videoFormat } from '@distube/ytdl-core'
+import ytdl from '@distube/ytdl-core'
 import { RoboRequest, RoboResponse } from '@robojs/server'
 
-interface RequestBody {
-	url: string
-	format: videoFormat
-}
-
 export default async (req: RoboRequest) => {
-	// const { url } = (await req.json()) as RequestBody
-	const url = req.query.url as string
+	const { searchParams } = new URL(req.url)
+	const url = searchParams.get('url')
 
-	if (!ytdl.validateURL(url)) {
+	if (!url || !ytdl.validateURL(url)) {
 		return new Response(JSON.stringify({ error: 'Invalid YouTube URL' }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json' }
