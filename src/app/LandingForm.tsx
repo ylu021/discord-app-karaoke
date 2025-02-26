@@ -10,7 +10,7 @@ export default function LandingForm({
 	setShowPlayer,
 	updateSongInfo
 }: {
-	setShowPlayer: React.Dispatch<React.SetStateAction<boolean>>
+	setShowPlayer?: React.Dispatch<React.SetStateAction<boolean>> | undefined
 	updateSongInfo: Function
 }) {
 	const [formInput, setFormInput] = useState({
@@ -22,7 +22,7 @@ export default function LandingForm({
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (formIsEmpty()) return
-		setShowPlayer(true)
+		setShowPlayer?.(true)
 		updateSongInfo(formInput)
 	}
 
@@ -37,7 +37,7 @@ export default function LandingForm({
 		return !formInput.url.trim() || !formInput.title.trim() || !formInput.artist.trim()
 	}
 	return (
-		<div>
+		<div className="w-full">
 			<form onSubmit={handleSearch} className="flex flex-col gap-4 mt-8">
 				<input
 					type="text"

@@ -60,7 +60,7 @@ export default function Lyrics({
 		<div ref={lyricsRef}>
 			{/* {calledHandle && <p>Called handle</p>} */}
 			{lyrics.map((line, index) => (
-				<p key={index} className={line.text === currentLine ? 'active text-red-500' : ''}>
+				<p key={index} className={line.text === currentLine ? 'active text-pink-500' : ''}>
 					{/* {`${Math.floor(debugTime)} - ${Math.floor(line.time)} : ${line.text}`} */}
 					{`${line.text}`}
 				</p>

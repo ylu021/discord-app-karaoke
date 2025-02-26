@@ -1,8 +1,11 @@
-import { useRef } from 'react'
+import { useContext, useRef, useState } from 'react'
 import useAudio from '../hooks/useAudio'
 import { FormInput } from './LandingForm'
 import useLyrics from '../hooks/useLyrics'
 import Lyrics from './Lyrics'
+import QueueContext from '../context/queueContext'
+import { disabledStyle } from './consts/disabledClass'
+import SongList from './SongList'
 
 interface PlayerProps {
 	url: string
@@ -20,39 +23,51 @@ interface PlayerProps {
 // 	{ time: 12.34, text: 'Think fast' }
 // ]
 
-export const Player = (props: PlayerProps) => {
-	const { url: testUrl, songInfo } = props
-	const audioRef = useRef<HTMLAudioElement>(null)
+export const URL = 'https://www.youtube.com/watch?v=jWQx2f-CErU'
 
-	const { audioInfo, isPlaying, setIsPlaying, isLoading, togglePlayPause, toggleReset } = useAudio(
-		audioRef,
-		songInfo.url ?? testUrl
-	)
-	const { lyrics } = useLyrics(songInfo.title, songInfo.artist)
+export const Player = () => {
+	const { queue, removeSong, currentSong } = useContext(QueueContext)
+	const [showDebugM, setShowDebugM] = useState(false)
+	const { audioRef, debugM, audioInfo, isPlaying, setIsPlaying, isLoading, togglePlayPause, toggleReset } = useAudio()
+	const { lyrics } = useLyrics(currentSong?.title, currentSong?.artist)
+
+	const skipSong = () => {
+		// const isConfirmed = window.confirm('Are you sure you want to skip to the next song?')
+		// if (isConfirmed) {
+		// stop the player
+		// togglePlayPause()
+		// remove the song from queue and use the next song
+		removeSong()
+		setIsPlaying(false)
+	}
+
+	const hasNext = () => {
+		return queue.length > 1 // if only one that means there is no song
+	}
 
 	return (
-		<div className="mt-15 max-w-96">
+		<div>
 			{isLoading ? (
 				<span>Loading song...</span>
 			) : (
-				<>
+				<div className="overflow-hidden">
+					<div className="fixed bottom-4 right-4">
+						{showDebugM && `debug Message: ${debugM}`}
+						{!isLoading ? (
+							<div className="flex flex-row justify-center items-center gap-4">
+								<button onClick={toggleReset}>↻</button>
+								<button onClick={togglePlayPause}>{isPlaying ? '⏸' : '▶'}</button>
+								<button onClick={skipSong} disabled={!hasNext()} className={disabledStyle}>
+									⏭
+								</button>
+							</div>
+						) : (
+							<span>Loading Player...</span>
+						)}
+					</div>
 					<div className="flex flex-col items-center gap-8">
 						{audioInfo && <div>{audioInfo.title}</div>}
-						<audio ref={audioRef} preload="auto" />
-						<div className="fixed bottom-4 right-4">
-							{audioRef?.current?.src ? (
-								<div className="flex flex-row justify-center items-center gap-4">
-									<button className="mt-6" onClick={togglePlayPause}>
-										{isPlaying ? 'Pause' : 'Play'}
-									</button>
-									<button className="mt-6" onClick={toggleReset}>
-										Restart
-									</button>
-								</div>
-							) : (
-								<span>Loading Player...</span>
-							)}
-						</div>
+						<audio ref={audioRef} preload="auto" onEnded={skipSong} />
 					</div>
 					<div id="lyrics">
 						{(lyrics?.length ?? 0 > 0) ? (
@@ -66,7 +81,7 @@ export const Player = (props: PlayerProps) => {
 							'No lyrics available'
 						)}
 					</div>
-				</>
+				</div>
 			)}
 		</div>
 	)
