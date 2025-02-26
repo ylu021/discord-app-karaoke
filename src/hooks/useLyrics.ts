@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { parseLRC } from '../utils/parseLRC'
 
-export default function useLyrics(title: string, artist: string) {
+export default function useLyrics(title?: string, artist?: string) {
 	const [error, setError] = useState<string | null>(null)
 	const [lyrics, setLyrics] = useState<{ time: number; text: string }[] | undefined | null>([])
 	const [metadata, setMetadata] = useState<{ [key: string]: string } | null | undefined>(null)
