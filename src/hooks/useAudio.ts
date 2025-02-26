@@ -7,11 +7,9 @@ export default function useAudio(audioRef: RefObject<HTMLAudioElement>, url: str
 	const [isPlaying, setIsPlaying] = useState(false)
 
 	useEffect(() => {
-		if (!audioRef?.current?.src) {
-			fetchAudioInfo()
-			fetchAudio()
-		}
-	}, [audioRef?.current?.src])
+		fetchAudioInfo()
+		fetchAudio()
+	}, [])
 
 	const fetchAudio = async () => {
 		setLoading(true)
@@ -46,16 +44,30 @@ export default function useAudio(audioRef: RefObject<HTMLAudioElement>, url: str
 		if (audio && isPlaying) {
 			audio.pause()
 		} else if (audio && !isPlaying) {
+			audio.currentTime = 0
 			audio.play()
 		}
 
 		setIsPlaying(!isPlaying)
 	}
 
+	const toggleReset = () => {
+		if (!audioRef?.current?.src) return
+		const audio = audioRef.current
+		if (audio && isPlaying) {
+			audio.pause()
+		}
+		audioRef.current.currentTime = 0
+		audioRef.current.play()
+		setIsPlaying(!isPlaying)
+	}
+
 	return {
 		audioInfo,
 		isPlaying,
+		setIsPlaying,
 		isLoading: loading,
-		togglePlayPause
+		togglePlayPause,
+		toggleReset
 	}
 }
