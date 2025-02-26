@@ -31,7 +31,7 @@ export const Player = (props: PlayerProps) => {
 	const { lyrics } = useLyrics(songInfo.title, songInfo.artist)
 
 	return (
-		<>
+		<div className="mt-15 max-w-96">
 			{isLoading ? (
 				<span>Loading song...</span>
 			) : (
@@ -39,18 +39,20 @@ export const Player = (props: PlayerProps) => {
 					<div className="flex flex-col items-center gap-8">
 						{audioInfo && <div>{audioInfo.title}</div>}
 						<audio ref={audioRef} preload="auto" />
-						{audioRef?.current?.src ? (
-							<div className="flex flex-row justify-center items-center gap-4">
-								<button className="mt-6" onClick={togglePlayPause}>
-									{isPlaying ? 'Pause' : 'Play'}
-								</button>
-								<button className="mt-6" onClick={toggleReset}>
-									Restart
-								</button>
-							</div>
-						) : (
-							<span>Loading Player...</span>
-						)}
+						<div className="fixed bottom-4 right-4">
+							{audioRef?.current?.src ? (
+								<div className="flex flex-row justify-center items-center gap-4">
+									<button className="mt-6" onClick={togglePlayPause}>
+										{isPlaying ? 'Pause' : 'Play'}
+									</button>
+									<button className="mt-6" onClick={toggleReset}>
+										Restart
+									</button>
+								</div>
+							) : (
+								<span>Loading Player...</span>
+							)}
+						</div>
 					</div>
 					<div id="lyrics">
 						{(lyrics?.length ?? 0 > 0) ? (
@@ -66,6 +68,6 @@ export const Player = (props: PlayerProps) => {
 					</div>
 				</>
 			)}
-		</>
+		</div>
 	)
 }

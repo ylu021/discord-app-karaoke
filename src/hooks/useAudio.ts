@@ -44,7 +44,6 @@ export default function useAudio(audioRef: RefObject<HTMLAudioElement>, url: str
 		if (audio && isPlaying) {
 			audio.pause()
 		} else if (audio && !isPlaying) {
-			audio.currentTime = 0
 			audio.play()
 		}
 
