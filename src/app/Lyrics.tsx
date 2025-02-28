@@ -25,8 +25,9 @@ export default function Lyrics({
 		return () => clearInterval(interval)
 	}, [audio])
 
-	const scrollLyrics = (time: number) => {
-		const lyric = lyrics.find((line) => Math.floor(line.time) === Math.floor(time ?? 0))
+	const scrollLyrics = () => {
+		const currentTime = audio?.currentTime
+		const lyric = lyrics.find((line) => Math.floor(line.time) === Math.floor(currentTime ?? 0))
 		if (lyric && lyric.text !== currentLine) {
 			setCurrentLine(lyric.text)
 		}
@@ -41,12 +42,10 @@ export default function Lyrics({
 		let interval: NodeJS.Timeout | null = null
 
 		const syncLyrics = () => {
-			const currentTime = audio?.currentTime
-			scrollLyrics(currentTime)
+			scrollLyrics()
 
-			if (interval) clearInterval(interval)
 			interval = setInterval(() => {
-				scrollLyrics(audio.currentTime)
+				scrollLyrics()
 			}, 500)
 		}
 
@@ -56,11 +55,24 @@ export default function Lyrics({
 		}
 	}, [audio, lyrics])
 
+	const getActiveLyric = (audioTime: number) => {
+		return lyrics.reduce(
+			(prev, curr) => (curr.time <= audioTime && curr.time > prev.time ? curr : prev),
+			lyrics[0] // Start with the first lyric
+		)
+	}
+
+	const isActive = (line: { time: number; text: string }, audio: HTMLAudioElement | null) => {
+		if (!audio) return false
+		const activeLyric = getActiveLyric(audio.currentTime)
+		return activeLyric.text === line.text
+	}
+
 	return (
 		<div ref={lyricsRef}>
 			{/* {calledHandle && <p>Called handle</p>} */}
 			{lyrics.map((line, index) => (
-				<p key={index} className={line.text === currentLine ? 'active text-pink-500' : ''}>
+				<p key={index} className={isActive(line, audio) ? 'active text-pink-500' : ''}>
 					{/* {`${Math.floor(debugTime)} - ${Math.floor(line.time)} : ${line.text}`} */}
 					{`${line.text}`}
 				</p>

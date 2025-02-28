@@ -14,7 +14,12 @@ export function parseLRC(lrcText: string | null) {
 		const lyricsMatch = line.match(/\[(\d+):(\d+\.\d+)](.+)/)
 		if (lyricsMatch) {
 			const [, minutes, seconds, text] = lyricsMatch
-			const formattedText = text.trim().replace('词', 'Lyricist').replace('编曲', 'Arranger').replace('曲', 'Composer')
+			const formattedText = text
+				.trim()
+				.replace('作', '')
+				.replace('词', 'Lyricist')
+				.replace('编曲', 'Arranger')
+				.replace('曲', 'Composer')
 			const time = parseInt(minutes) * 60 + parseFloat(seconds)
 			lyrics.push({ time, text: formattedText })
 		}

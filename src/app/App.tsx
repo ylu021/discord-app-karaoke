@@ -51,6 +51,8 @@ const QueueProvider = ({ children }: { children: React.ReactNode }) => {
 			const nextSong = newQueue.slice(1)?.[0]
 			if (nextSong) {
 				setCurrentSong(nextSong)
+			} else {
+				setCurrentSong(undefined)
 			}
 		} else {
 			setQueue((prevQueue) => [...prevQueue.filter((existSong) => existSong !== song)])
