@@ -8,10 +8,10 @@ export interface Song {
 
 interface Queue {
 	queue: Song[]
-	currentSong: Song | undefined
+	currentSong: Song | null
 	addSong: (song: Song) => void
-	removeSong: (song: Song) => void
-	setCurrentSong: (song: Song) => void
+	removeSong: (song?: Song) => void
+	setCurrentSong: (song: Song | null) => void
 }
 
 export const MAX_QUEUE_SIZE = 5
@@ -20,7 +20,7 @@ const QueueContext = createContext<Queue>({
 	queue: [],
 	addSong: () => {},
 	removeSong: () => {},
-	currentSong: undefined,
+	currentSong: null,
 	setCurrentSong: () => {}
 })
 

@@ -1,33 +1,24 @@
+import { useSyncState } from '@robojs/sync'
 import React, { useEffect } from 'react'
+import { useDiscordSdk } from '../hooks/useDiscordSdk'
 
 export default function Lyrics({
+	startIndex,
 	audio,
-	lyrics,
-	isPlaying,
-	setIsPlaying
+	lyrics
 }: {
+	startIndex: number
 	audio: HTMLAudioElement | null
 	lyrics: { time: number; text: string }[]
-	isPlaying: boolean
-	setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+	const { discordSdk } = useDiscordSdk()
 	const lyricsRef = React.useRef<HTMLDivElement>(null)
-	const [currentLine, setCurrentLine] = React.useState('')
-	// for debug
-	const [debugTime, setDebugTime] = React.useState(audio?.currentTime ?? 0)
-	const [calledHandle, setCalledHandle] = React.useState(false)
-
-	useEffect(() => {
-		if (!audio) return
-		const interval = setInterval(() => {
-			setDebugTime(audio?.currentTime)
-		}, 500)
-		return () => clearInterval(interval)
-	}, [audio])
+	const [currentLine, setCurrentLine] = useSyncState('', [discordSdk.instanceId, 'currentLine'])
+	const [calledOnce, setCalledOnce] = React.useState(false)
 
 	const scrollLyrics = () => {
 		const currentTime = audio?.currentTime
-		const lyric = lyrics.find((line) => Math.floor(line.time) === Math.floor(currentTime ?? 0))
+		const lyric = lyrics.slice(startIndex).find((line) => line.time === Math.floor(currentTime ?? 0))
 		if (lyric && lyric.text !== currentLine) {
 			setCurrentLine(lyric.text)
 		}
@@ -49,16 +40,17 @@ export default function Lyrics({
 			}, 500)
 		}
 
-		if (!calledHandle) {
-			setCalledHandle(true)
+		if (!calledOnce) {
+			setCalledOnce(true)
 			syncLyrics()
 		}
 	}, [audio, lyrics])
 
 	const getActiveLyric = (audioTime: number) => {
-		return lyrics.reduce(
-			(prev, curr) => (curr.time <= audioTime && curr.time > prev.time ? curr : prev),
-			lyrics[0] // Start with the first lyric
+		const sliced = lyrics.slice(startIndex)
+		return lyrics.slice(startIndex).reduce(
+			(prev, curr) => (curr.time <= Math.floor(audioTime ?? 0) && curr.time > prev.time ? curr : prev),
+			sliced[0] // Start with the first lyric
 		)
 	}
 
@@ -70,11 +62,9 @@ export default function Lyrics({
 
 	return (
 		<div ref={lyricsRef}>
-			{/* {calledHandle && <p>Called handle</p>} */}
 			{lyrics.map((line, index) => (
 				<p key={index} className={isActive(line, audio) ? 'active text-pink-500' : ''}>
-					{/* {`${Math.floor(debugTime)} - ${Math.floor(line.time)} : ${line.text}`} */}
-					{`${line.text}`}
+					{`${Math.floor(audio?.currentTime ?? 0)} : ${line.time} - ${line.text}`}
 				</p>
 			))}
 		</div>

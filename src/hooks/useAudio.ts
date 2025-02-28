@@ -9,13 +9,11 @@ export default function useAudio() {
 	const [debugM, setDebugM] = useState('')
 	const audioRef = useRef<HTMLAudioElement>(null)
 
-
 	useEffect(() => {
-		if (!loading && audioRef.current) {
+		if (currentSong && !loading && audioRef.current) {
 			fetchAudio()
 		}
 	}, [currentSong]) // url changed i refetch
-
 
 	const fetchAudio = async () => {
 		setDebugM(`${currentSong?.title}, ${audioRef.current}`)
@@ -29,7 +27,7 @@ export default function useAudio() {
 		setLoading(false)
 		const blob = await response.blob()
 		const objectURL = URL.createObjectURL(blob)
-		if (audioRef.current) {
+		if (!audioRef?.current?.src && audioRef.current) {
 			audioRef.current.src = objectURL // Set the source
 			audioRef.current.load()
 			togglePlayPause()

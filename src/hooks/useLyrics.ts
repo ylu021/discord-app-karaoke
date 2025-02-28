@@ -4,6 +4,7 @@ import { parseLRC } from '../utils/parseLRC'
 export default function useLyrics(title?: string, artist?: string) {
 	const [error, setError] = useState<string | null>(null)
 	const [lyrics, setLyrics] = useState<{ time: number; text: string }[] | undefined | null>([])
+	const [startIndex, setStartIndex] = useState<number>(0)
 	const [metadata, setMetadata] = useState<{ [key: string]: string } | null | undefined>(null)
 
 	useEffect(() => {
@@ -17,6 +18,8 @@ export default function useLyrics(title?: string, artist?: string) {
 				const processed = processLyrics(text)
 				setLyrics(processed?.lyrics)
 				setMetadata(processed?.metadata)
+				const indexOfFirstLine = processed?.lyrics?.findIndex((line) => isFirstLine(line.text)) ?? 0
+				setStartIndex(Math.max(0, indexOfFirstLine))
 			} catch (e) {
 				setError(e as string)
 				console.error(e)
@@ -26,10 +29,15 @@ export default function useLyrics(title?: string, artist?: string) {
 	}, [title, artist])
 
 	return {
+		startIndex,
 		lyrics,
 		metadata,
 		error
 	}
+}
+
+function isFirstLine(line: string) {
+	return !['Lyricist', 'Arranger', 'Composer'].some((keyword) => line.includes(keyword))
 }
 
 function processLyrics(lrcText: string) {

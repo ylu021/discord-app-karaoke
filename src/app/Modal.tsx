@@ -7,10 +7,16 @@ function Modal({ open, setOpen }: { open: boolean; setOpen: Function }) {
 	if (!open) return null
 
 	const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null)
+	const [errorMessage, setErrorMessage] = useState('')
 
 	const { addSong } = useContext(QueueContext)
 	const handleAdd = (song: Song) => {
-		addSong(song)
+		setErrorMessage('')
+		const response = addSong(song) ?? { error: '' }
+		if (response?.error) {
+			setErrorMessage(response.error)
+			return
+		}
 		setOpen(false)
 	}
 
@@ -20,7 +26,7 @@ function Modal({ open, setOpen }: { open: boolean; setOpen: Function }) {
 
 	return modalRoot
 		? createPortal(
-				<dialog open className="w-100 h-80 px-5 py-5 fixed top-20 z-1 ml-4">
+				<dialog open className="w-100 h-90 px-5 py-5 fixed top-20 z-1 ml-4">
 					<div className="text-right">
 						<button onClick={() => setOpen(false)}>
 							<span className="text-xl">✖</span>
@@ -28,7 +34,7 @@ function Modal({ open, setOpen }: { open: boolean; setOpen: Function }) {
 					</div>
 					<div className="font-semibold">Next Banger!</div>
 					<div className="flex items-center">
-						<LandingForm updateSongInfo={handleAdd} />
+						<LandingForm updateSongInfo={handleAdd} errorMessage={errorMessage} />
 					</div>
 				</dialog>,
 				modalRoot

@@ -1,28 +1,27 @@
 import React, { useState } from 'react'
 
 export interface FormInput {
-	url?: string
+	url: string
 	title: string
 	artist: string
 }
 
 export default function LandingForm({
-	setShowPlayer,
-	updateSongInfo
+	updateSongInfo,
+	errorMessage
 }: {
-	setShowPlayer?: React.Dispatch<React.SetStateAction<boolean>> | undefined
 	updateSongInfo: Function
+	errorMessage?: string
 }) {
 	const [formInput, setFormInput] = useState({
-		url: '',
-		title: '',
-		artist: ''
+		url: 'https://www.youtube.com/watch?v=IK7zBVmG3kA',
+		title: '휘파람',
+		artist: 'Blackpink'
 	} as FormInput)
 
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (formIsEmpty()) return
-		setShowPlayer?.(true)
 		updateSongInfo(formInput)
 	}
 
@@ -71,6 +70,7 @@ export default function LandingForm({
 				>
 					Submit
 				</button>
+				<span className="text-red-500">{errorMessage}</span>
 			</form>
 		</div>
 	)

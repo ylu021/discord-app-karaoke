@@ -21,7 +21,7 @@ export function parseLRC(lrcText: string | null) {
 				.replace('编曲', 'Arranger')
 				.replace('曲', 'Composer')
 			const time = parseInt(minutes) * 60 + parseFloat(seconds)
-			lyrics.push({ time, text: formattedText })
+			lyrics.push({ time: Math.floor(time), text: formattedText })
 		}
 	})
 

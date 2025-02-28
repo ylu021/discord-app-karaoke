@@ -27,9 +27,8 @@ export const URL = 'https://www.youtube.com/watch?v=jWQx2f-CErU'
 
 export const Player = () => {
 	const { queue, removeSong, currentSong } = useContext(QueueContext)
-	const [showDebugM, setShowDebugM] = useState(false)
-	const { audioRef, debugM, audioInfo, isPlaying, setIsPlaying, isLoading, togglePlayPause, toggleReset } = useAudio()
-	const { lyrics } = useLyrics(currentSong?.title, currentSong?.artist)
+	const { audioRef, audioInfo, isPlaying, setIsPlaying, isLoading, togglePlayPause, toggleReset } = useAudio()
+	const { lyrics, startIndex } = useLyrics(currentSong?.title, currentSong?.artist)
 
 	const skipSong = () => {
 		// const isConfirmed = window.confirm('Are you sure you want to skip to the next song?')
@@ -50,9 +49,8 @@ export const Player = () => {
 			{isLoading ? (
 				<span>Loading song...</span>
 			) : (
-				<div className="overflow-hidden">
+				<div className="overflow-hidden mt-10">
 					<div className="fixed bottom-4 right-4">
-						{showDebugM && `debug Message: ${debugM}`}
 						{!isLoading ? (
 							<div className="flex flex-row justify-center items-center gap-4">
 								<button onClick={toggleReset}>↻</button>
@@ -71,12 +69,7 @@ export const Player = () => {
 					</div>
 					<div id="lyrics">
 						{(lyrics?.length ?? 0 > 0) ? (
-							<Lyrics
-								isPlaying={isPlaying}
-								setIsPlaying={setIsPlaying}
-								lyrics={lyrics ?? []}
-								audio={audioRef.current}
-							/>
+							<Lyrics startIndex={startIndex} lyrics={lyrics ?? []} audio={audioRef.current} />
 						) : (
 							'No lyrics available'
 						)}
