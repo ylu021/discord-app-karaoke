@@ -1,5 +1,5 @@
 import { RefObject, useContext, useEffect, useRef, useState } from 'react'
-import QueueContext from '../context/queueContext'
+import QueueContext from '../context/QueueContext'
 
 export default function useAudio() {
 	const { currentSong } = useContext(QueueContext)

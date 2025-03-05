@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import QueueContext from '../../context/queueContext'
+import QueueContext from '../../context/QueueContext'
 
 export default function Header() {
 	const { currentSong } = useContext(QueueContext)

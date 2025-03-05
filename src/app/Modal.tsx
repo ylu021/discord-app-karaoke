@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import QueueContext, { Song } from '../context/queueContext'
+import QueueContext from '../context/QueueContext'
 import LandingForm from './LandingForm'
+import { Song } from '../types/songType'
 
 function Modal({ open, setOpen }: { open: boolean; setOpen: Function }) {
 	if (!open) return null

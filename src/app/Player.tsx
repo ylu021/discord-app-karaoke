@@ -3,7 +3,7 @@ import useAudio from '../hooks/useAudio'
 import { FormInput } from './LandingForm'
 import useLyrics from '../hooks/useLyrics'
 import Lyrics from './Lyrics'
-import QueueContext from '../context/queueContext'
+import QueueContext from '../context/QueueContext'
 import { disabledStyle } from './consts/disabledClass'
 import SongList from './SongList'
 

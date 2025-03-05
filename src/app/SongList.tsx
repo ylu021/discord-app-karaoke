@@ -1,5 +1,6 @@
 import { useContext } from 'react'
-import QueueContext, { MAX_QUEUE_SIZE, Song } from '../context/queueContext'
+import QueueContext, { MAX_QUEUE_SIZE } from '../context/QueueContext'
+import { Song } from '../types/songType'
 
 export default function SongList({ openModal }: { openModal: () => void }) {
 	const { queue: songList, currentSong } = useContext(QueueContext)

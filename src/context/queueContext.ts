@@ -1,10 +1,5 @@
 import { createContext } from 'react'
-
-export interface Song {
-	title: string
-	artist: string
-	url: string
-}
+import { Song } from '../types/songType'
 
 interface Queue {
 	queue: Song[]

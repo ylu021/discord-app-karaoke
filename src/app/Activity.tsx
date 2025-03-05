@@ -1,10 +1,11 @@
 import { useContext, useState } from 'react'
-import QueueContext, { Song } from '../context/queueContext'
+import QueueContext from '../context/QueueContext'
 import LandingForm from './LandingForm'
 import Modal from './Modal'
 import { Player } from './Player'
 import Header from './Player/Header'
 import SongList from './SongList'
+import { Song } from '../types/songType'
 
 export const Activity = () => {
 	const { addSong, currentSong, setCurrentSong } = useContext(QueueContext)
