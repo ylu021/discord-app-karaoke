@@ -1,3 +1,4 @@
+import React from 'react'
 import { useSyncState } from '@robojs/sync'
 import { useDiscordSdk } from '../hooks/useDiscordSdk'
 import QueueContext, { MAX_QUEUE_SIZE } from './QueueContext'
@@ -7,6 +8,7 @@ const QueueProvider = ({ children }: { children: React.ReactNode }) => {
 	const { discordSdk } = useDiscordSdk()
 	const [queue, setQueue] = useSyncState<Song[]>([], [discordSdk.instanceId, 'queue'])
 	const [currentSong, setCurrentSong] = useSyncState<Song | null>(null, [discordSdk.instanceId, 'currentSong'])
+
 	const addSong = (song: Song) => {
 		const updatedQueue = [...queue]
 		if (queue.length === MAX_QUEUE_SIZE) {

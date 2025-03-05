@@ -3,6 +3,7 @@ import QueueProvider from '../context/QueueProvider'
 import { DiscordContextProvider } from '../hooks/useDiscordSdk'
 import { Activity } from './Activity'
 import './App.css'
+import KaraokeStatusProvider from '../context/KaraokeStatusProvider'
 
 /**
  * 🔒 Set `authenticate` to true to enable Discord authentication
@@ -18,7 +19,9 @@ export default function App() {
 		<DiscordContextProvider>
 			<SyncContextProvider>
 				<QueueProvider>
-					<Activity />
+					<KaraokeStatusProvider>
+						<Activity />
+					</KaraokeStatusProvider>
 				</QueueProvider>
 			</SyncContextProvider>
 		</DiscordContextProvider>
